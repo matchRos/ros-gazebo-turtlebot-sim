@@ -1,7 +1,10 @@
 name: Run tests in simulation
 
-# We only want these changes to run when we push to the main branch
+# Run the simulation test on pull requests and pushes to the main branch
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -39,3 +42,9 @@ jobs:
         run: |
           source /opt/ros/noetic/setup.bash
           catkin_make
+
+      # Run our ROS test!
+      - name: Run tests
+        run: |
+          source devel/setup.bash &&
+          rostest my_turtlebot_sim my_turtlebot_sim.test --text
