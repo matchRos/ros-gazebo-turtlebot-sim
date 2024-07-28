@@ -1,6 +1,6 @@
-name: Run tests in simulation
+name: Waffle turtlebot sim test
 
-# Run the simulation test on pull requests and pushes to the main branch
+# Trigger the simulation test on pull requests and pushes to the main branch
 on:
   pull_request:
     branches:
@@ -9,16 +9,15 @@ on:
     branches:
       - main
 
-# Let's default to the burger variant of Turtlebot
+# Set the default Turtlebot model to 'waffle'
 env:
-  TURTLEBOT3_MODEL: burger
+  TURTLEBOT3_MODEL: waffle
 
 jobs:
   simulation:
-    # All steps inside this job will run inside the ROS Melodic container
+    # All steps inside this job will run inside the ROS Noetic container
     container: public.ecr.aws/docker/library/ros:noetic-robot
     runs-on: ubuntu-20.04
-    # Let's ensure we use bash, and work within our catkin worksapce
     defaults:
       run:
         shell: bash
@@ -37,14 +36,14 @@ jobs:
             ros-noetic-gazebo-ros-pkgs \
             ros-noetic-gazebo-ros-control
 
-      # Build our workspace
+      # Build the workspace
       - name: Build workspace
         run: |
           source /opt/ros/noetic/setup.bash
           catkin_make
 
-      # Run our ROS test!
+      # Run the ROS + Gazebo turtlebot velocity test
       - name: Run tests
         run: |
           source devel/setup.bash &&
-          rostest my_turtlebot_sim my_turtlebot_sim.test --text
+          rostest my_turtlebot_sim my_turtlebot_velocity.test --text

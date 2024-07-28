@@ -15,4 +15,5 @@ catkin_install_python(PROGRAMS mover.py
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   add_rostest(my_turtlebot_sim.test)
+  add_rostest(my_turtlebot_velocity.test)
 endif()
