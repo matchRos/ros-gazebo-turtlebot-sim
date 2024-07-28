@@ -4,6 +4,7 @@ import unittest
 import rospy
 from gazebo_msgs.msg import ModelStates
 
+
 class TestBotVelocity(unittest.TestCase):
     """
     Test case to verify the velocity of a simulated robot.
@@ -23,14 +24,16 @@ class TestBotVelocity(unittest.TestCase):
 
         # Subscribe to the model states topic
         self.robot_velocity = None
-        self.subscriber = rospy.Subscriber('/gazebo/model_states', ModelStates, self.velocity_callback)
+        self.subscriber = rospy.Subscriber(
+            '/gazebo/model_states', ModelStates, self.velocity_callback)
 
         # Wait for data (adjust timeout as needed)
         rospy.sleep(5)
 
         # Check if the measured velocity matches the expected value
         expected_velocity = 0.9  # Meters per second (m/s)
-        self.assertAlmostEqual(self.robot_velocity, expected_velocity, delta=0.1)
+        self.assertAlmostEqual(self.robot_velocity,
+                               expected_velocity, delta=0.1)
 
     def velocity_callback(self, data):
         """
@@ -45,6 +48,7 @@ class TestBotVelocity(unittest.TestCase):
             self.robot_velocity = data.twist[idx].linear.x
         except ValueError:
             rospy.logwarn("Robot 'turtlebot3_waffle' not found in Gazebo.")
+
 
 if __name__ == '__main__':
     import rostest
