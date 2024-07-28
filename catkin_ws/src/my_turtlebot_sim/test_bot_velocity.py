@@ -32,8 +32,15 @@ class TestBotVelocity(unittest.TestCase):
 
         # Check if the measured velocity matches the expected value
         expected_velocity = 0.9  # Meters per second (m/s)
+        tolerance = 0.1
+        if abs(self.robot_velocity - expected_velocity) < tolerance:
+            rospy.loginfo(
+                f"Velocity test passed! Measured velocity: {self.robot_velocity:.2f} m/s")
+        else:
+            rospy.logwarn(f"Velocity test failed! Measured velocity: {self.robot_velocity:.2f} m/s "
+                          f"(expected: {expected_velocity:.2f} m/s)")
         self.assertAlmostEqual(self.robot_velocity,
-                               expected_velocity, delta=0.1)
+                               expected_velocity, delta=tolerance)
 
     def velocity_callback(self, data):
         """
@@ -47,7 +54,7 @@ class TestBotVelocity(unittest.TestCase):
             idx = data.name.index('turtlebot3_waffle')
             self.robot_velocity = data.twist[idx].linear.x
         except ValueError:
-            rospy.logwarn("Robot 'turtlebot3_waffle' not found in Gazebo.")
+            pass
 
 
 if __name__ == '__main__':
