@@ -35,6 +35,7 @@ jobs:
             ros-noetic-turtlebot3 \
             ros-noetic-turtlebot3-simulations \
             ros-noetic-gazebo-ros-pkgs \
+            ros-noetic-gazebo \
             ros-noetic-gazebo-ros-control
 
       # Build our workspace
