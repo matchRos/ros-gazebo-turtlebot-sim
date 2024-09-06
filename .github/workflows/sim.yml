@@ -1,6 +1,5 @@
 name: Run Gazebo with specific world
 
-# Run the simulation test on pull requests and pushes to the main branch
 on:
   pull_request:
     branches:
@@ -11,7 +10,6 @@ on:
 
 jobs:
   simulation:
-    # All steps inside this job will run inside the ROS Noetic container
     container: public.ecr.aws/docker/library/ros:noetic-robot
     runs-on: ubuntu-20.04
     defaults:
@@ -19,17 +17,19 @@ jobs:
         shell: bash
         working-directory: catkin_ws/
     steps:
-      # Check out the code
       - uses: actions/checkout@v2
 
-      # Install the Gazebo packages for Noetic
-      - name: Install dependencies
+      # Add Gazebo repository and install dependencies
+      - name: Set up Gazebo and install dependencies
         run: |
-          sudo apt-get update && \
+          sudo apt-get update && sudo apt-get install -y lsb-release gnupg
+          sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" > /etc/apt/sources.list.d/gazebo-stable.list'
+          wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+          sudo apt-get update
           sudo apt-get install -y \
+            gazebo9 \
             ros-noetic-gazebo-ros-pkgs \
-            ros-noetic-gazebo-ros-control \
-            gazebo9
+            ros-noetic-gazebo-ros-control --fix-missing
 
       # Start Gazebo with a specific world
       - name: Start Gazebo with custom world
