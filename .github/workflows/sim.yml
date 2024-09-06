@@ -19,11 +19,22 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Install ROS and Gazebo dependencies via ros-noetic-desktop-full
-      - name: Install ROS Noetic Desktop Full (includes Gazebo)
+      # Install wget and basic tools, disable interactive prompts
+      - name: Install dependencies and disable interactive prompts
         run: |
-          sudo apt-get update && sudo apt-get install -y \
-          ros-noetic-desktop-full --fix-missing
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y wget curl gnupg2 lsb-release
+
+      # Add Gazebo repository and install dependencies
+      - name: Set up Gazebo and install dependencies
+        run: |
+          sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" > /etc/apt/sources.list.d/gazebo-stable.list'
+          curl -sSL http://packages.osrfoundation.org/gazebo.key | sudo apt-key add -
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            gazebo9 \
+            ros-noetic-gazebo-ros-pkgs \
+            ros-noetic-gazebo-ros-control --fix-missing
 
       # Start Gazebo with a specific world
       - name: Start Gazebo with custom world
