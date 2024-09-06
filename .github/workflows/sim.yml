@@ -19,12 +19,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # Install wget and dependencies
+      - name: Install wget and basic tools
+        run: |
+          sudo apt-get update && sudo apt-get install -y wget curl gnupg2 lsb-release
+
       # Add Gazebo repository and install dependencies
       - name: Set up Gazebo and install dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y lsb-release gnupg
           sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" > /etc/apt/sources.list.d/gazebo-stable.list'
-          wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+          curl -sSL http://packages.osrfoundation.org/gazebo.key | sudo apt-key add -
           sudo apt-get update
           sudo apt-get install -y \
             gazebo9 \
